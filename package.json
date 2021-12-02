@@ -1,35 +1,35 @@
 {
-  "name": "sl-vue-tree",
-  "version": "1.8.5",
-  "description": "draggable tree vue component",
-  "browserslist": "> 0.25%, not dead",
-  "main": "dist/sl-vue-tree.js",
-  "types": "dist/sl-vue-tree.d.ts",
+  "name": "@onekiloparsec/vue-power-tree",
+  "version": "2.0.0",
   "scripts": {
-    "clear": "rimraf dist",
-    "build": "npm run clear && webpack-cli --progress --mode production",
-    "start": "npm run clear && webpack-cli --watch --progress --mode development",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
   },
-  "keywords": [
-    "vue",
-    "tree",
-    "draggable",
-    "sortable"
+  "files": [
+    "dist"
   ],
-  "author": "Holiber",
+  "main": "./dist/vue-power-tree.umd.js",
+  "module": "./dist/vue-power-tree.es.js",
+  "style": "./dist/style.css",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/onekiloparsec/vue-power-tree.git"
+  },
+  "bugs": {
+    "url": "https://github.com/onekiloparsec/vue-power-tree/issues"
+  },
+  "homepage": "https://github.com/onekiloparsec/vue-power-tree#readme",
   "license": "MIT",
+  "dependencies": {
+    "vue": "^3.2.16"
+  },
   "devDependencies": {
-    "@babel/core": "^7.1.2",
-    "@babel/preset-env": "^7.1.0",
-    "babel-loader": "^8.0.4",
-    "copy-webpack-plugin": "^5.1.1",
-    "css-loader": "^3.4.2",
-    "rimraf": "^2.6.2",
-    "vue": "^2.5.16",
-    "vue-loader": "^14.2.2",
-    "vue-template-compiler": "^2.5.16",
-    "webpack": "^4.42.0",
-    "webpack-cli": "^3.1.2"
+    "@vitejs/plugin-vue": "^1.9.3",
+    "autoprefixer": "^10.3.7",
+    "vite": "^2.6.4"
   }
 }
