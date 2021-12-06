@@ -1,14 +1,14 @@
-# sl-vue-tree
+# vue-power-tree
 
 Customizable draggable tree component for Vue.js
 
 ![preview](preview.png)
 
-[demo](https://holiber.github.io/sl-vue-tree/demo/index)
+[demo](https://holiber.github.io/vue-power-tree/demo/index)
 
 install
 
-`npm i sl-vue-tree`
+`npm i vue-power-tree`
 
 
 	
@@ -16,11 +16,11 @@ install
 ````html
 
 <div id="app">
-  <sl-vue-tree v-model="nodes"/>
+  <vue-power-tree v-model="nodes"/>
 </div>
 
-<link rel="stylesheet" href="dist/sl-vue-tree-dark.css">
-<script src="dist/sl-vue-tree.js"></script>
+<link rel="stylesheet" href="dist/vue-power-tree-dark.css">
+<script src="dist/vue-power-tree.js"></script>
 
 <script>
 
@@ -38,7 +38,7 @@ install
 
   new Vue({
     el: '#app',
-    components: { SlVueTree },
+    components: { PowerTree },
     data: function () {
      return {
        nodes: nodes
@@ -50,13 +50,13 @@ install
 
 ````
 
-The `value` property is an array of `ISlTreeNodeModel` nodes:
+The `value` property is an array of `IPowerTreeNodeModel` nodes:
 
 ````typescript
-interface ISlTreeNodeModel<TDataType> {
+interface IPowerTreeNodeModel<TDataType> {
     title: string;
     isLeaf?: boolean;
-    children?: ISlTreeNodeModel<TDataType>[];
+    children?: IPowerTreeNodeModel<TDataType>[];
     isExpanded?: boolean;
     isSelected?: boolean;
     isDraggable?: boolean;
@@ -65,10 +65,10 @@ interface ISlTreeNodeModel<TDataType> {
 }
 ````
 
-For convenience the component's events return `ISlTreeNode` objects. Those actually are `ISlTreeNodeModel`
+For convenience the component's events return `IPowerTreeNode` objects. Those actually are `IPowerTreeNodeModel`
 with some computed props:
 ````typescript
-interface ISlTreeNode<TDataType> extends ISlTreeNodeModel<TDataType> {
+interface IPowerTreeNode<TDataType> extends IPowerTreeNodeModel<TDataType> {
     isFirstChild: boolean;
     isLastChild: boolean;
     isVisible: boolean;	// node is visible if all of its parents are expanded
@@ -76,11 +76,11 @@ interface ISlTreeNode<TDataType> extends ISlTreeNodeModel<TDataType> {
     ind: number; // index in the array of siblings 
     path: number[]; // path to node as array of indexes, for example [2, 0, 1] in the example above is path to `Item4` 
     pathStr: string; // serialized path to node
-    children: ISlTreeNode<TDataType>[];
+    children: IPowerTreeNode<TDataType>[];
 }
 ````
 
-You can get the list of `ISlTreeNode` from the computed `slVueTree.nodes` property
+You can get the list of `IPowerTreeNode` from the computed `slVueTree.nodes` property
 
 
 
@@ -88,7 +88,7 @@ You can get the list of `ISlTreeNode` from the computed `slVueTree.nodes` proper
 
 | prop             | type               | default                | description                                                                                                                                                                                              |
 |------------------|--------------------|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| value            | ISlTreeNodeModel[] | []                     | An array of nodes to show. Each node is represented by `ISlTreeNodeModel` interface                                                                                                                              |
+| value            | IPowerTreeNodeModel[] | []                     | An array of nodes to show. Each node is represented by `IPowerTreeNodeModel` interface                                                                                                                              |
 | allowMultiselect | Boolean            | true                   | Disable or enable the multiselect feature                                                                                                                                                                |
 | allowToggleBranch | Boolean            | true                   | Disable or enable the expand/collapse button                                                                                                                                                                |
 | edgeSize         | Number             | 3                      | Offset in pixels from top and bottom for folder-node element. While dragging cursor is in that offset, the dragging node will be placed before or after the folder-node instead of being placed inside the folder. |
@@ -100,7 +100,7 @@ You can get the list of `ISlTreeNode` from the computed `slVueTree.nodes` proper
 
 | prop           | type            | description                                                                                                                                                                                                                                                     |
 |----------------|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| nodes          | ISlTreeNode[]   | List of nodes with some computed props. See `ISlTreeNode` interface.                                                                                                                                                                                            |
+| nodes          | IPowerTreeNode[]   | List of nodes with some computed props. See `IPowerTreeNode` interface.                                                                                                                                                                                            |
 | cursorPosition | ICursorPosition | Represents the current cursor position that describes the action that will be applied to the dragged node on `mouseup` event. See `ICursorPosition` interface |
 | selectionSize  | Number          | The count of selected nodes
 | dragSize       | Number          | The count of selected and draggable nodes
@@ -108,7 +108,7 @@ You can get the list of `ISlTreeNode` from the computed `slVueTree.nodes` proper
 
 ````
 interface ICursorPosition<TDataType> {
-  node: ISlTreeNode<TDataType>;
+  node: IPowerTreeNode<TDataType>;
   placement: 'before' | 'inside' | 'after';
 }  
 ````
@@ -117,48 +117,48 @@ interface ICursorPosition<TDataType> {
 
 | event           | callback arguments                                                         | description                                       |
 |-----------------|----------------------------------------------------------------------------|---------------------------------------------------|
-| input           | nodes: ISlTreeNodeModel[]                                                  | triggers for any changes to `value` property     |
-| select          | selectedNodes: ISlTreeNode[], event: MouseEvent                            | triggers when a node has been selected/deselected |
-| toggle          | toggledNode: ISlTreeNode, event: MouseEvent                                | triggers when a node has been collapsed/expanded  |
-| drop            | draggingNodes: ISlTreeNode[], position: ICursorPosition, event: MouseEvent | triggers when dragging nodes have been dropped    |
-| nodeclick       | node: ISlTreeNode, event: MouseEvent                                       | handle `click` event on node                      |
-| nodedblclick    | node: ISlTreeNode, event: MouseEvent                                       | handle `dblclick` event on node                   |
-| nodecontextmenu | node: ISlTreeNode, event: MouseEvent                                       | handle `contextmenu` event on node                |
-| externaldrop    | cursorPosition: ICursorPosition, event: MouseEvent                         | handle `drop` event for external items [demo](https://holiber.github.io/sl-vue-tree/demo/externaldrag)             |
+| input           | nodes: IPowerTreeNodeModel[]                                                  | triggers for any changes to `value` property     |
+| select          | selectedNodes: IPowerTreeNode[], event: MouseEvent                            | triggers when a node has been selected/deselected |
+| toggle          | toggledNode: IPowerTreeNode, event: MouseEvent                                | triggers when a node has been collapsed/expanded  |
+| drop            | draggingNodes: IPowerTreeNode[], position: ICursorPosition, event: MouseEvent | triggers when dragging nodes have been dropped    |
+| nodeclick       | node: IPowerTreeNode, event: MouseEvent                                       | handle `click` event on node                      |
+| nodedblclick    | node: IPowerTreeNode, event: MouseEvent                                       | handle `dblclick` event on node                   |
+| nodecontextmenu | node: IPowerTreeNode, event: MouseEvent                                       | handle `contextmenu` event on node                |
+| externaldrop    | cursorPosition: ICursorPosition, event: MouseEvent                         | handle `drop` event for external items [demo](https://holiber.github.io/vue-power-tree/demo/externaldrag)             |
 
 # Methods
 
 
 | method                                                                                                   | description                                                                                        |
 |----------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
-| getNode(path: number[]): ISlTreeNode                                                                     | Find the node by using its path                                                                   |
-| traverse(cb: (node: ISlTreeNode, nodeModel: ISlTreeNodeModel, siblings: ISlTreeNodeModel[])  => boolean) | Helpful method to traverse all nodes. The traversing will be stopped if callback returns `false`.  |
-| updateNode(path: number[], patch: Partial<ISlTreeNodeModel>)                                             | Update the node by using its path                                                                 |
+| getNode(path: number[]): IPowerTreeNode                                                                     | Find the node by using its path                                                                   |
+| traverse(cb: (node: IPowerTreeNode, nodeModel: IPowerTreeNodeModel, siblings: IPowerTreeNodeModel[])  => boolean) | Helpful method to traverse all nodes. The traversing will be stopped if callback returns `false`.  |
+| updateNode(path: number[], patch: Partial<IPowerTreeNodeModel>)                                             | Update the node by using its path                                                                 |
 | select(path: number[], addToSelection = false)                                                           | Select the node by using its path                                                                 |                                                                                                                                              |
 | getNodeEl(): HTMLElement                                                                                 | Get the node HTMLElement by using its path                                                        |
-| getSelected(): ISlTreeNode[]                                                                             | Get selected nodes                                                                                 |
-| insert(position: ICursorPosition, nodeModel: ISlTreeNodeModel)                                           | Insert nodes by the current cursor position.                                                       |
+| getSelected(): IPowerTreeNode[]                                                                             | Get selected nodes                                                                                 |
+| insert(position: ICursorPosition, nodeModel: IPowerTreeNodeModel)                                           | Insert nodes by the current cursor position.                                                       |
 | remove(paths: number[][])                                                                                | Remove nodes by paths. For example `.remove([[0,1], [0,2]])`
-| getFirstNode(): ISlTreeNode                                                                              | Get the first node in the tree                                                                     |
-| getLastNode(): ISlTreeNode                                                                               | Get the last node in the tree
-| getNextNode(path: number[], filter?: (node: ISlTreeNode<TDataType>) => boolean): ISlTreeNode<TDataType>; | Get the next node. You can skip the next nodes by using `filter`
-| getPrevNode(path: number[], filter?: (node: ISlTreeNode<TDataType>) => boolean): ISlTreeNode<TDataType>; | Get the previous node. You can skip the previous nodes by using `filter`
+| getFirstNode(): IPowerTreeNode                                                                              | Get the first node in the tree                                                                     |
+| getLastNode(): IPowerTreeNode                                                                               | Get the last node in the tree
+| getNextNode(path: number[], filter?: (node: IPowerTreeNode<TDataType>) => boolean): IPowerTreeNode<TDataType>; | Get the next node. You can skip the next nodes by using `filter`
+| getPrevNode(path: number[], filter?: (node: IPowerTreeNode<TDataType>) => boolean): IPowerTreeNode<TDataType>; | Get the previous node. You can skip the previous nodes by using `filter`
 
 # Slots
 
 
 | slot       | context     | description                                                                                   |
 |------------|-------------|-----------------------------------------------------------------------------------------------|
-| title      | ISlTreeNode | Slot for item title                                                                           |
-| toggle     | ISlTreeNode | Slot for expand/collapse button                                                               |
-| sidebar    | ISlTreeNode | Sidebar content                                                                               |
-| draginfo   | SlVueTree   | Slot that follows the mouse cursor while dragging. By default shows the dragging nodes count. |
-| empty-node | ISlTreeNode | Slot for (optional) message when folder is open, but empty                                    |
+| title      | IPowerTreeNode | Slot for item title                                                                           |
+| toggle     | IPowerTreeNode | Slot for expand/collapse button                                                               |
+| sidebar    | IPowerTreeNode | Sidebar content                                                                               |
+| draginfo   | PowerTree   | Slot that follows the mouse cursor while dragging. By default shows the dragging nodes count. |
+| empty-node | IPowerTreeNode | Slot for (optional) message when folder is open, but empty                                    |
 
 # IE 11 support
 
 You must add a [babel-polyfill](https://babeljs.io/docs/en/babel-polyfill) for it to work correctly in IE11  
-[See IE11 example](https://holiber.github.io/sl-vue-tree/demo/ie11test.html)
+[See IE11 example](https://holiber.github.io/vue-power-tree/demo/ie11test.html)
 
 
 # Examples
@@ -166,7 +166,7 @@ You must add a [babel-polyfill](https://babeljs.io/docs/en/babel-polyfill) for i
 
 ## Add a folder or item icon via `title` slot
 ````html
-<sl-vue-tree v-model="nodes">
+<vue-power-tree v-model="nodes">
     <template slot="title" slot-scope="{ node }">
 
       <span class="item-icon">
@@ -177,7 +177,7 @@ You must add a [babel-polyfill](https://babeljs.io/docs/en/babel-polyfill) for i
       {{ node.title }}
       
     </template>
-</sl-vue-tree>
+</vue-power-tree>
 
 ````
 
@@ -191,23 +191,23 @@ slVueTree.traverse((node, nodeModel, path) => {
 
 ## Handle keydown and keyup events via `getNextNode` and `getPrevNode` methods
 
-[demo](https://holiber.github.io/sl-vue-tree/demo/keyboardcontrol)
+[demo](https://holiber.github.io/vue-power-tree/demo/keyboardcontrol)
 
 ## Contributing
 [see CONTRIBUTING.md](CONTRIBUTING.md)
 
 # Changelog
 v1.8.5
-- fix d.ts https://github.com/holiber/sl-vue-tree/pull/77
+- fix d.ts https://github.com/holiber/vue-power-tree/pull/77
 
 v1.8.4
-- added `insert` method https://github.com/holiber/sl-vue-tree/pull/39
+- added `insert` method https://github.com/holiber/vue-power-tree/pull/39
 
 v1.8.3
-- Allow to disable or enable the expand/collapse button https://github.com/holiber/sl-vue-tree/pull/33
+- Allow to disable or enable the expand/collapse button https://github.com/holiber/vue-power-tree/pull/33
 
 v1.8.1
-- added IE11 support https://github.com/holiber/sl-vue-tree/issues/17
+- added IE11 support https://github.com/holiber/vue-power-tree/issues/17
 
 v1.8.0
 
@@ -223,11 +223,11 @@ v1.7.0
 
 v1.6.0
 
-- added `getNextNode` and `getPrevNode` methods https://github.com/holiber/sl-vue-tree/issues/6
+- added `getNextNode` and `getPrevNode` methods https://github.com/holiber/vue-power-tree/issues/6
 
 v1.5.1
-- improve drop on the bottom of tree https://github.com/holiber/sl-vue-tree/issues/5
+- improve drop on the bottom of tree https://github.com/holiber/vue-power-tree/issues/5
 
 v1.5.0
-- `SlVueTree.select` method added
-- `SlVueTree.@nodeclick` event fixed
+- `PowerTree.select` method added
+- `PowerTree.@nodeclick` event fixed

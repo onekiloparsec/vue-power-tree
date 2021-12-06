@@ -1,6 +1,6 @@
-import PowerTree from './sl-vue-tree.vue'
+import PowerTree from './power-tree.vue'
 
-import './sl-vue-tree-minimal.css.css'
+import './power-tree-minimal.css'
 
 export {
   PowerTree

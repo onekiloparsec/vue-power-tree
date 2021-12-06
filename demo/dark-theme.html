@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>sl-vue-tree</title>
-  <link rel="stylesheet" href="../dist/sl-vue-tree-dark.css">
+  <title>vue-power-tree</title>
+  <link rel="stylesheet" href="../dist/vue-power-tree-dark.css">
   <link href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
-  <script src="../dist/sl-vue-tree.js"></script>
+  <script src="../dist/vue-power-tree.js"></script>
 </head>
 <body>
 
@@ -24,7 +24,7 @@
 
   <div class="row">
     <div class="tree-container">
-      <sl-vue-tree
+      <vue-power-tree
           v-model="nodes"
           ref="slVueTree"
           :allow-multiselect="true"
@@ -64,7 +64,7 @@
           {{selectedNodesTitle}}
         </template>
 
-      </sl-vue-tree>
+      </vue-power-tree>
     </div>
 
 
@@ -114,7 +114,7 @@
 
   new Vue({
     el: '#app',
-    components: { SlVueTree },
+    components: { PowerTree },
     data: function () {
      return {
        nodes: nodes,
@@ -215,7 +215,7 @@
     flex-grow: 1;
   }
 
-  .sl-vue-tree.sl-vue-tree-root {
+  .vue-power-tree.vue-power-tree-root {
     flex-grow: 1;
     overflow-x: hidden;
     overflow-y: auto;
