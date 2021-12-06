@@ -1,9 +1,9 @@
 import { resolveComponent, openBlock, createElementBlock, normalizeClass, createElementVNode, Fragment, renderList, withModifiers, normalizeStyle, renderSlot, toDisplayString, createCommentVNode, createTextVNode, createBlock, withCtx, withDirectives, vShow } from "vue";
 var _sfc_main = {
   name: "power-tree",
-  emits: ["input", "select", "beforedrop", "drop", "toggle", "nodeclick", "nodedblclick", "nodecontextmenu", "externaldragover", "externaldrop"],
+  emits: ["update:modelValue", "select", "beforedrop", "drop", "toggle", "nodeclick", "nodedblclick", "nodecontextmenu", "externaldragover", "externaldrop"],
   props: {
-    value: {
+    modelValue: {
       type: Array,
       default: () => []
     },
@@ -61,7 +61,7 @@ var _sfc_main = {
       isDragging: false,
       lastMousePos: { x: 0, y: 0 },
       preventDrag: false,
-      currentValue: this.value
+      currentValue: this.modelValue
     };
   },
   mounted() {
@@ -73,7 +73,7 @@ var _sfc_main = {
     document.removeEventListener("mouseup", this.onDocumentMouseupHandler);
   },
   watch: {
-    value: function(newValue) {
+    modelValue: function(newValue) {
       this.currentValue = newValue;
     }
   },
@@ -172,7 +172,7 @@ var _sfc_main = {
     },
     emitInput(newValue) {
       this.currentValue = newValue;
-      this.getRoot().$emit("input", newValue);
+      this.getRoot().$emit("update:modelValue", newValue);
     },
     emitSelect(selectedNodes, event) {
       this.getRoot().$emit("select", selectedNodes, event);
