@@ -209,7 +209,6 @@ var _sfc_main = {
       this.setCursorPosition(null);
     },
     select(path, addToSelection = false, event = null) {
-      console.trace(event);
       const multiselectKeys = Array.isArray(this.multiselectKey) ? this.multiselectKey : [this.multiselectKey];
       const multiselectKeyIsPressed = event && !!multiselectKeys.find((key) => event[key]);
       addToSelection = (multiselectKeyIsPressed || addToSelection) && this.allowMultiselect;
