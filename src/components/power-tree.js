@@ -77,7 +77,7 @@ export default {
 
   watch: {
     modelValue: function (newValue) {
-      this.currentValue = newValue
+      this.currentValue = this.copy(newValue)
     }
   },
 
