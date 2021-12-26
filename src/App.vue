@@ -7,7 +7,11 @@
 
     <div class="row">
       <div class="tree-container">
-        <power-tree v-model="nodes" :show-branches="true"></power-tree>
+        <power-tree v-model="nodes" :show-branches="true">
+          <template #sidebar>
+            <button @click="click"></button>
+          </template>
+        </power-tree>
       </div>
 
       <div class="json-preview">
@@ -59,6 +63,11 @@
       return {
         nodes: nodes,
         lastEvent: 'No last event'
+      }
+    },
+    methods: {
+      click (event) {
+        console.log(event)
       }
     }
   }
