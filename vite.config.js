@@ -8,7 +8,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/components/index.js'),
-      name: 'VuePowerTable',
+      name: 'VuePowerTree',
       fileName: (format) => `vue-power-tree.${format}.js`
     },
     rollupOptions: {
