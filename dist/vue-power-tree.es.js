@@ -74,7 +74,7 @@ var _sfc_main = {
   },
   watch: {
     modelValue: function(newValue) {
-      this.currentValue = newValue;
+      this.currentValue = this.copy(newValue);
     }
   },
   computed: {
@@ -209,6 +209,7 @@ var _sfc_main = {
       this.setCursorPosition(null);
     },
     select(path, addToSelection = false, event = null) {
+      console.trace(event);
       const multiselectKeys = Array.isArray(this.multiselectKey) ? this.multiselectKey : [this.multiselectKey];
       const multiselectKeyIsPressed = event && !!multiselectKeys.find((key) => event[key]);
       addToSelection = (multiselectKeyIsPressed || addToSelection) && this.allowMultiselect;
@@ -433,7 +434,7 @@ var _sfc_main = {
         return;
       }
       this.mouseIsDown = false;
-      if (!this.isDragging && targetNode && !this.preventDrag) {
+      if (!this.isDragging && targetNode && !this.preventDrag && event.target === event.currentTarget) {
         this.select(targetNode.path, false, event);
       }
       this.preventDrag = false;
