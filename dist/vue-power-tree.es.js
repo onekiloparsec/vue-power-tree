@@ -433,7 +433,7 @@ var _sfc_main = {
         return;
       }
       this.mouseIsDown = false;
-      if (!this.isDragging && targetNode && !this.preventDrag && !event.target.dataset.sidebar) {
+      if (!this.isDragging && targetNode && !this.preventDrag && event.target.dataset.title) {
         this.select(targetNode.path, false, event);
       }
       this.preventDrag = false;
@@ -634,22 +634,6 @@ const _hoisted_7 = { class: "vue-power-tree-title" };
 const _hoisted_8 = ["onClick"];
 const _hoisted_9 = { class: "vue-power-tree-sidebar" };
 const _hoisted_10 = {
-  slot: "title",
-  "slot-scope": "{ node }"
-};
-const _hoisted_11 = {
-  slot: "toggle",
-  "slot-scope": "{ node }"
-};
-const _hoisted_12 = {
-  slot: "sidebar",
-  "slot-scope": "{ node }"
-};
-const _hoisted_13 = {
-  slot: "empty-node",
-  "slot-scope": "{ node }"
-};
-const _hoisted_14 = {
   key: 0,
   ref: "dragInfo",
   class: "vue-power-tree-drag-info"
@@ -735,26 +719,24 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
             onDragover: _cache[1] || (_cache[1] = withModifiers(() => {
             }, ["prevent"]))
           }, {
-            default: withCtx(() => [
-              createElementVNode("template", _hoisted_10, [
-                renderSlot(_ctx.$slots, "title", { node }, () => [
-                  createTextVNode(toDisplayString(node.title), 1)
-                ])
-              ]),
-              createElementVNode("template", _hoisted_11, [
-                renderSlot(_ctx.$slots, "toggle", { node }, () => [
-                  createElementVNode("span", null, toDisplayString(!node.isLeaf ? node.isExpanded ? "-" : "+" : ""), 1)
-                ])
-              ]),
-              createElementVNode("template", _hoisted_12, [
-                renderSlot(_ctx.$slots, "sidebar", { node })
-              ]),
-              createElementVNode("template", _hoisted_13, [
-                !node.isLeaf && node.children.length == 0 && node.isExpanded ? renderSlot(_ctx.$slots, "empty-node", {
-                  key: 0,
-                  node
-                }) : createCommentVNode("", true)
+            title: withCtx(({ node: node2 }) => [
+              renderSlot(_ctx.$slots, "title", { node: node2 }, () => [
+                createTextVNode(toDisplayString(node2.title), 1)
               ])
+            ]),
+            toggle: withCtx(({ node: node2 }) => [
+              renderSlot(_ctx.$slots, "toggle", { node: node2 }, () => [
+                createElementVNode("span", null, toDisplayString(!node2.isLeaf ? node2.isExpanded ? "-" : "+" : ""), 1)
+              ])
+            ]),
+            sidebar: withCtx(({ node: node2 }) => [
+              renderSlot(_ctx.$slots, "sidebar", { node: node2 })
+            ]),
+            "empty-node": withCtx(({ node: node2 }) => [
+              !node2.isLeaf && node2.children.length === 0 && node2.isExpanded ? renderSlot(_ctx.$slots, "empty-node", {
+                key: 0,
+                node: node2
+              }) : createCommentVNode("", true)
             ]),
             _: 2
           }, 1032, ["value", "level", "parentInd", "allowMultiselect", "allowToggleBranch", "edgeSize", "showBranches"])) : createCommentVNode("", true),
@@ -769,7 +751,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
           }, null, 36)
         ], 2);
       }), 256)),
-      _ctx.isRoot ? withDirectives((openBlock(), createElementBlock("div", _hoisted_14, [
+      _ctx.isRoot ? withDirectives((openBlock(), createElementBlock("div", _hoisted_10, [
         renderSlot(_ctx.$slots, "draginfo", {}, () => [
           createTextVNode(" Items: " + toDisplayString(_ctx.selectionSize), 1)
         ])
