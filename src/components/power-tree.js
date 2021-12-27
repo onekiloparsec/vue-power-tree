@@ -526,7 +526,7 @@ export default {
 
       this.mouseIsDown = false
 
-      if (!this.isDragging && targetNode && !this.preventDrag && !event.target.dataset.sidebar) {
+      if (!this.isDragging && targetNode && !this.preventDrag && event.target.dataset.title) {
         this.select(targetNode.path, false, event)
       }
 
