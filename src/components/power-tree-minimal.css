@@ -41,9 +41,13 @@
 
 }
 
-.vue-power-tree-title {
+.vue-power-tree-row {
   flex-grow: 1;
   margin-right: auto;
+}
+
+.vue-power-tree-title {
+  flex-grow: 1;
 }
 
 .vue-power-tree-sidebar {

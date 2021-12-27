@@ -54,7 +54,7 @@
             </slot>
           </div>
 
-          <div class="vue-power-tree-title" data-tree="row">
+          <div class="vue-power-tree-row" data-tree="row">
             <span class="vue-power-tree-toggle" v-if="!node.isLeaf" @click="onToggleHandler($event, node)">
               <slot name="toggle" :node="node">
                 <span>{{ !node.isLeaf ? (node.isExpanded ? '-' : '+') : '' }}</span>
