@@ -634,7 +634,7 @@ const _hoisted_4 = {
 const _hoisted_5 = { key: 0 };
 const _hoisted_6 = { key: 1 };
 const _hoisted_7 = {
-  class: "vue-power-tree-title",
+  class: "vue-power-tree-row",
   "data-tree": "row"
 };
 const _hoisted_8 = ["onClick"];
