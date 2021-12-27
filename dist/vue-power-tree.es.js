@@ -79,9 +79,7 @@ var _sfc_main = {
   },
   computed: {
     cursorPosition() {
-      if (this.isRoot)
-        return this.rootCursorPosition;
-      return this.getParent().cursorPosition;
+      return this.isRoot ? this.rootCursorPosition : this.getParent().cursorPosition;
     },
     depth() {
       return this.gaps.length;
@@ -233,8 +231,9 @@ var _sfc_main = {
           if (nodeModel.isSelected)
             nodeModel.isSelected = false;
         }
-        if (nodeModel.isSelected)
+        if (nodeModel.isSelected) {
           selectedNodes.push(node);
+        }
       }, newNodes);
       this.lastSelectedNode = selectedNode;
       this.emitInput(newNodes);
@@ -246,8 +245,9 @@ var _sfc_main = {
         this.getRoot().onMousemoveHandler(event);
         return;
       }
-      if (this.preventDrag)
+      if (this.preventDrag) {
         return;
+      }
       const initialDraggingState = this.isDragging;
       const isDragging = this.isDragging || this.mouseIsDown && (this.lastMousePos.x !== event.clientX || this.lastMousePos.y !== event.clientY);
       const isDragStarted = initialDraggingState === false && isDragging === true;
@@ -359,8 +359,9 @@ var _sfc_main = {
     getNextNode(path, filter = null) {
       let resultNode = null;
       this.traverse((node) => {
-        if (this.comparePaths(node.path, path) < 1)
+        if (this.comparePaths(node.path, path) < 1) {
           return;
+        }
         if (!filter || filter(node)) {
           resultNode = node;
           return false;
@@ -426,14 +427,15 @@ var _sfc_main = {
         this.onNodeMouseupHandler(event);
     },
     onNodeMouseupHandler(event, targetNode = null) {
-      if (event.button !== 0)
+      if (event.button !== 0) {
         return;
+      }
       if (!this.isRoot) {
         this.getRoot().onNodeMouseupHandler(event, targetNode);
         return;
       }
       this.mouseIsDown = false;
-      if (!this.isDragging && targetNode && !this.preventDrag && event.target.dataset.title) {
+      if (!this.isDragging && targetNode && !this.preventDrag && event.currentTarget.dataset.tree === "title") {
         this.select(targetNode.path, false, event);
       }
       this.preventDrag = false;
@@ -482,8 +484,9 @@ var _sfc_main = {
       this.stopDrag();
     },
     onToggleHandler(event, node) {
-      if (!this.allowToggleBranch)
+      if (!this.allowToggleBranch) {
         return;
+      }
       this.updateNode(node.path, { isExpanded: !node.isExpanded });
       this.emitToggle(node, event);
       event.stopPropagation();
@@ -622,7 +625,7 @@ const _hoisted_1 = {
   ref: "nodes",
   class: "vue-power-tree-nodes-list"
 };
-const _hoisted_2 = ["onMousedown", "onMouseup", "onContextmenu", "onDblclick", "onClick", "onDragover", "onDrop", "path"];
+const _hoisted_2 = ["path"];
 const _hoisted_3 = { class: "vue-power-tree-gap" };
 const _hoisted_4 = {
   key: 0,
@@ -630,10 +633,17 @@ const _hoisted_4 = {
 };
 const _hoisted_5 = { key: 0 };
 const _hoisted_6 = { key: 1 };
-const _hoisted_7 = { class: "vue-power-tree-title" };
+const _hoisted_7 = {
+  class: "vue-power-tree-title",
+  "data-tree": "row"
+};
 const _hoisted_8 = ["onClick"];
-const _hoisted_9 = { class: "vue-power-tree-sidebar" };
+const _hoisted_9 = ["onMousedown", "onMouseup", "onContextmenu", "onDblclick", "onClick", "onDragover", "onDrop"];
 const _hoisted_10 = {
+  class: "vue-power-tree-sidebar",
+  "data-tree": "sidebar"
+};
+const _hoisted_11 = {
   key: 0,
   ref: "dragInfo",
   class: "vue-power-tree-drag-info"
@@ -667,13 +677,6 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
               "vue-power-tree-node-is-leaf": node.isLeaf,
               "vue-power-tree-node-is-folder": !node.isLeaf
             }]),
-            onMousedown: ($event) => _ctx.onNodeMousedownHandler($event, node),
-            onMouseup: ($event) => _ctx.onNodeMouseupHandler($event, node),
-            onContextmenu: ($event) => _ctx.emitNodeContextmenu(node, $event),
-            onDblclick: ($event) => _ctx.emitNodeDblclick(node, $event),
-            onClick: ($event) => _ctx.emitNodeClick(node, $event),
-            onDragover: ($event) => _ctx.onExternalDragoverHandler(node, $event),
-            onDrop: ($event) => _ctx.onExternalDropHandler(node, $event),
             path: node.pathStr
           }, [
             (openBlock(true), createElementBlock(Fragment, null, renderList(_ctx.gaps, (gapInd) => {
@@ -695,18 +698,29 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
                   createElementVNode("span", null, toDisplayString(!node.isLeaf ? node.isExpanded ? "-" : "+" : ""), 1)
                 ])
               ], 8, _hoisted_8)) : createCommentVNode("", true),
-              renderSlot(_ctx.$slots, "title", { node }, () => [
-                createTextVNode(toDisplayString(node.title), 1)
-              ]),
+              createElementVNode("span", {
+                onMousedown: ($event) => _ctx.onNodeMousedownHandler($event, node),
+                onMouseup: ($event) => _ctx.onNodeMouseupHandler($event, node),
+                onContextmenu: ($event) => _ctx.emitNodeContextmenu(node, $event),
+                onDblclick: ($event) => _ctx.emitNodeDblclick(node, $event),
+                onClick: ($event) => _ctx.emitNodeClick(node, $event),
+                onDragover: ($event) => _ctx.onExternalDragoverHandler(node, $event),
+                onDrop: ($event) => _ctx.onExternalDropHandler(node, $event),
+                "data-tree": "title"
+              }, [
+                renderSlot(_ctx.$slots, "title", { node }, () => [
+                  createTextVNode(toDisplayString(node.title), 1)
+                ])
+              ], 40, _hoisted_9),
               !node.isLeaf && node.children.length == 0 && node.isExpanded ? renderSlot(_ctx.$slots, "empty-node", {
                 key: 1,
                 node
               }) : createCommentVNode("", true)
             ]),
-            createElementVNode("div", _hoisted_9, [
+            createElementVNode("div", _hoisted_10, [
               renderSlot(_ctx.$slots, "sidebar", { node })
             ])
-          ], 42, _hoisted_2),
+          ], 10, _hoisted_2),
           node.children && node.children.length && node.isExpanded ? (openBlock(), createBlock(_component_power_tree, {
             key: 0,
             value: node.children,
@@ -751,7 +765,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
           }, null, 36)
         ], 2);
       }), 256)),
-      _ctx.isRoot ? withDirectives((openBlock(), createElementBlock("div", _hoisted_10, [
+      _ctx.isRoot ? withDirectives((openBlock(), createElementBlock("div", _hoisted_11, [
         renderSlot(_ctx.$slots, "draginfo", {}, () => [
           createTextVNode(" Items: " + toDisplayString(_ctx.selectionSize), 1)
         ])
