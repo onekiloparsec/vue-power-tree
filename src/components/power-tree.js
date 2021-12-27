@@ -526,7 +526,7 @@ export default {
 
       this.mouseIsDown = false
 
-      if (!this.isDragging && targetNode && !this.preventDrag && event.target === event.currentTarget) {
+      if (!this.isDragging && targetNode && !this.preventDrag && event.path.indexOf(event.currentTarget) <= 1) {
         this.select(targetNode.path, false, event)
       }
 
