@@ -28,19 +28,11 @@
 
         <div
           class="vue-power-tree-node-item"
-          @mousedown="onNodeMousedownHandler($event, node)"
-          @mouseup="onNodeMouseupHandler($event, node)"
-          @contextmenu="emitNodeContextmenu(node, $event)"
-          @dblclick="emitNodeDblclick(node, $event)"
-          @click="emitNodeClick(node, $event)"
-          @dragover="onExternalDragoverHandler(node, $event)"
-          @drop="onExternalDropHandler(node, $event)"
           :path="node.pathStr"
           :class="{
             'vue-power-tree-cursor-hover':
               cursorPosition &&
               cursorPosition.node.pathStr === node.pathStr,
-
             'vue-power-tree-cursor-inside':
               cursorPosition &&
               cursorPosition.placement === 'inside' &&
@@ -62,23 +54,32 @@
             </slot>
           </div>
 
-          <div class="vue-power-tree-title">
-          <span class="vue-power-tree-toggle" v-if="!node.isLeaf" @click="onToggleHandler($event, node)">
-            <slot name="toggle" :node="node">
-              <span>
-               {{ !node.isLeaf ? (node.isExpanded ? '-' : '+') : '' }}
-              </span>
-            </slot>
-          </span>
+          <div class="vue-power-tree-title" data-tree="row">
+            <span class="vue-power-tree-toggle" v-if="!node.isLeaf" @click="onToggleHandler($event, node)">
+              <slot name="toggle" :node="node">
+                <span>{{ !node.isLeaf ? (node.isExpanded ? '-' : '+') : '' }}</span>
+              </slot>
+            </span>
 
-            <slot name="title" :node="node">{{ node.title }}</slot>
+            <span
+              @mousedown="onNodeMousedownHandler($event, node)"
+              @mouseup="onNodeMouseupHandler($event, node)"
+              @contextmenu="emitNodeContextmenu(node, $event)"
+              @dblclick="emitNodeDblclick(node, $event)"
+              @click="emitNodeClick(node, $event)"
+              @dragover="onExternalDragoverHandler(node, $event)"
+              @drop="onExternalDropHandler(node, $event)"
+              data-tree="title"
+            >
+              <slot name="title" :node="node">
+                {{ node.title }}
+              </slot>
+            </span>
 
-            <slot name="empty-node" :node="node" v-if="!node.isLeaf && node.children.length == 0 && node.isExpanded">
-            </slot>
-
+            <slot name="empty-node" :node="node" v-if="!node.isLeaf && node.children.length == 0 && node.isExpanded"></slot>
           </div>
 
-          <div class="vue-power-tree-sidebar">
+          <div class="vue-power-tree-sidebar" data-tree="sidebar">
             <slot name="sidebar" :node="node"></slot>
           </div>
 

@@ -9,7 +9,7 @@
       <div class="tree-container">
         <power-tree v-model="nodes" :show-branches="true">
           <template #title="{ node }">
-            <div data-title="root">
+            <div>
               {{ node.title }}
             </div>
           </template>
