@@ -9,7 +9,7 @@
       <div class="tree-container">
         <power-tree v-model="nodes" :show-branches="true">
           <template #sidebar>
-            <button @click="click"></button>
+            <button @click="click">-</button>
           </template>
         </power-tree>
       </div>
