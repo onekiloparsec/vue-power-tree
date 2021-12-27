@@ -95,11 +95,11 @@
           :showBranches="showBranches"
           @dragover.prevent
         >
-          <template slot="title" slot-scope="{ node }">
+          <template #title="{ node }">
             <slot name="title" :node="node">{{ node.title }}</slot>
           </template>
 
-          <template slot="toggle" slot-scope="{ node }">
+          <template #toggle="{ node }">
             <slot name="toggle" :node="node">
             <span>
                {{ !node.isLeaf ? (node.isExpanded ? '-' : '+') : '' }}
@@ -107,12 +107,12 @@
             </slot>
           </template>
 
-          <template slot="sidebar" slot-scope="{ node }">
+          <template #sidebar="{ node }">
             <slot name="sidebar" :node="node"></slot>
           </template>
 
-          <template slot="empty-node" slot-scope="{ node }">
-            <slot name="empty-node" :node="node" v-if="!node.isLeaf && node.children.length == 0 && node.isExpanded">
+          <template #empty-node="{ node }">
+            <slot name="empty-node" :node="node" v-if="!node.isLeaf && node.children.length === 0 && node.isExpanded">
             </slot>
           </template>
 
