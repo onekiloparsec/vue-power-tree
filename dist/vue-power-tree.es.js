@@ -706,7 +706,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
                 onClick: ($event) => _ctx.emitNodeClick(node, $event),
                 onDragover: ($event) => _ctx.onExternalDragoverHandler(node, $event),
                 onDrop: ($event) => _ctx.onExternalDropHandler(node, $event),
-                "data-tree": "title"
+                "data-tree": "title",
+                class: "vue-power-tree-title"
               }, [
                 renderSlot(_ctx.$slots, "title", { node }, () => [
                   createTextVNode(toDisplayString(node.title), 1)
