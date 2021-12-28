@@ -70,6 +70,7 @@
               @dragover="onExternalDragoverHandler(node, $event)"
               @drop="onExternalDropHandler(node, $event)"
               data-tree="title"
+              class="vue-power-tree-title"
             >
               <slot name="title" :node="node">
                 {{ node.title }}
