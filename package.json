@@ -25,7 +25,7 @@
   "homepage": "https://github.com/onekiloparsec/vue-power-tree#readme",
   "license": "MIT",
   "dependencies": {
-    "vue": "^3.2.26"
+    "vue": "^3.2.29"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.0.1",
