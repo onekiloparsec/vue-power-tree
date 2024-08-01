@@ -241,6 +241,8 @@ export default {
           if (shiftSelectionStarted) {
             nodeModel.isSelected = node.isSelectable
           }
+        } else if (node.pathStr === clickedNode.pathStr) {
+          nodeModel.isSelected = nodeModel.isSelected ? false : node.isSelectable
         } else if (!addToSelection) {
           if (nodeModel.isSelected) {
             nodeModel.isSelected = false
