@@ -214,12 +214,15 @@ export default {
       this.setCursorPosition(null)
     },
     select (path, addToSelection = false, event = null) {
+      const clickedNode = this.getNode(path)
+      if (!clickedNode) {
+        return null
+      }
       const multiselectKeys = Array.isArray(this.multiselectKey) ? this.multiselectKey : [this.multiselectKey]
       const multiselectKeyIsPressed = event && !!multiselectKeys.find(key => event[key])
       addToSelection = (multiselectKeyIsPressed || addToSelection) && this.allowMultiselect
 
       const selectedNode = this.getNode(path)
-      if (!selectedNode) return null
       const newNodes = this.copy(this.currentValue)
       const shiftSelectionMode = this.allowMultiselect && event && event.shiftKey && this.lastSelectedNode
       const selectedNodes = []
