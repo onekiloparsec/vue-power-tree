@@ -230,7 +230,7 @@ export default {
 
       this.traverse((node, nodeModel) => {
         if (shiftSelectionMode) {
-          if (node.pathStr === selectedNode.pathStr || node.pathStr === this.lastSelectedNode.pathStr) {
+          if (node.pathStr === clickedNode.pathStr || node.pathStr === this.lastSelectedNode.pathStr) {
             nodeModel.isSelected = node.isSelectable
             shiftSelectionStarted = !shiftSelectionStarted
           }
@@ -245,10 +245,10 @@ export default {
         }
       }, newNodes)
 
-      this.lastSelectedNode = selectedNode
+      this.lastSelectedNode = clickedNode
       this.emitInput(newNodes)
       this.emitSelect(selectedNodes, event)
-      return selectedNode
+      return clickedNode
     },
     onMousemoveHandler (event) {
       if (!this.isRoot) {
