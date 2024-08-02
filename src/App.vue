@@ -7,7 +7,7 @@
 
     <div class="row">
       <div class="tree-container">
-        <power-tree v-model="nodes" :show-branches="true">
+        <power-tree v-model="nodes" :show-branches="true" @select="selectedNodes = $event">
           <template #title="{ node }">
             <div>
               {{ node.title }}
@@ -23,7 +23,7 @@
       </div>
 
       <div class="json-preview">
-        <pre>{{ JSON.stringify(nodes, null, 4) }}</pre>
+        <pre>{{ JSON.stringify(selectedNodes, null, 4) }}</pre>
       </div>
     </div>
 
@@ -70,6 +70,7 @@
     data () {
       return {
         nodes: nodes,
+        selectedNodes: [],
         lastEvent: 'No last event'
       }
     },
