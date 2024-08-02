@@ -29,18 +29,6 @@ export default {
       type: Boolean,
       default: true
     },
-    multiselectKey: {
-      type: [String, Array],
-      default: function () {
-        return ['ctrlKey', 'metaKey']
-      },
-      validator: function (value) {
-        let allowedKeys = ['ctrlKey', 'metaKey', 'altKey']
-        let multiselectKeys = Array.isArray(value) ? value : [value]
-        multiselectKeys = multiselectKeys.filter(keyName => allowedKeys.indexOf(keyName) !== -1)
-        return !!multiselectKeys.length
-      }
-    },
     scrollAreaHeight: {
       type: Number,
       default: 70
