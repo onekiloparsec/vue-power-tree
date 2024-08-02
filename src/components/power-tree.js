@@ -207,12 +207,11 @@ export default {
         return null
       }
 
-      const multiselectKeys = Array.isArray(this.multiselectKey) ? this.multiselectKey : [this.multiselectKey]
-      const multiselectKeyIsPressed = event && !!multiselectKeys.find(key => event[key])
-      // const shiftKeyIsPressed = event && event.shiftKey && this.allowMultiselect
+      const multiselectKeys = ['ctrlKey', 'metaKey']
+      const multiselectKeyIsPressed = event && !!multiselectKeys.find(key => event[key]) && this.allowMultiselect
+
       const shiftKeyIsPressed = event && event.shiftKey && this.allowMultiselect
       const enableShiftSelection = shiftKeyIsPressed && this.lastSelectedNode
-
       addToSelection = (multiselectKeyIsPressed || addToSelection) && this.allowMultiselect
 
       const newNodes = this.copy(this.currentValue)
