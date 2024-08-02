@@ -210,18 +210,19 @@ export default {
       const multiselectKeys = Array.isArray(this.multiselectKey) ? this.multiselectKey : [this.multiselectKey]
       const multiselectKeyIsPressed = event && !!multiselectKeys.find(key => event[key])
       // const shiftKeyIsPressed = event && event.shiftKey && this.allowMultiselect
+      const shiftKeyIsPressed = event && event.shiftKey && this.allowMultiselect
+      const enableShiftSelection = shiftKeyIsPressed && this.lastSelectedNode
 
       addToSelection = (multiselectKeyIsPressed || addToSelection) && this.allowMultiselect
 
       const newNodes = this.copy(this.currentValue)
       // const newSelectedNodes = this.getSelected(newNodes)
 
-      const shiftSelectionMode = this.allowMultiselect && event && event.shiftKey && this.lastSelectedNode
       const selectedNodes = []
       let shiftSelectionStarted = false
 
       this.traverse((node, nodeModel) => {
-        if (shiftSelectionMode) {
+        if (enableShiftSelection) {
           if (node.pathStr === clickedNode.pathStr || node.pathStr === this.lastSelectedNode.pathStr) {
             nodeModel.isSelected = node.isSelectable
             shiftSelectionStarted = !shiftSelectionStarted
