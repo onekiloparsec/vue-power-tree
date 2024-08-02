@@ -214,8 +214,8 @@ export default {
       const enableShiftSelection = shiftKeyIsPressed && this.lastSelectedNode
       addToSelection = (multiselectKeyIsPressed || addToSelection) && this.allowMultiselect
 
-      const newNodes = this.copy(this.currentValue)
-      // const newSelectedNodes = this.getSelected(newNodes)
+      // const newNodes = this.copy(this.currentValue)
+      const newNodes = this.currentValue
 
       const selectedNodes = []
       let shiftSelectionStarted = false
