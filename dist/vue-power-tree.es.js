@@ -1,5 +1,5 @@
-import { resolveComponent, openBlock, createElementBlock, normalizeClass, createElementVNode, Fragment, renderList, withModifiers, normalizeStyle, renderSlot, toDisplayString, createCommentVNode, createTextVNode, createBlock, withCtx, withDirectives, vShow } from "vue";
-var _sfc_main = {
+import { resolveComponent as H, openBlock as h, createElementBlock as c, normalizeClass as w, createElementVNode as f, Fragment as R, renderList as $, withModifiers as D, normalizeStyle as k, renderSlot as g, toDisplayString as m, createCommentVNode as S, createTextVNode as b, createBlock as E, withCtx as N, withDirectives as B, vShow as T } from "vue";
+const L = {
   name: "power-tree",
   emits: ["update:modelValue", "select", "beforedrop", "drop", "toggle", "nodeclick", "nodedblclick", "nodecontextmenu", "externaldragover", "externaldrop"],
   props: {
@@ -13,7 +13,7 @@ var _sfc_main = {
     },
     showBranches: {
       type: Boolean,
-      default: false
+      default: !1
     },
     level: {
       type: Number,
@@ -24,23 +24,11 @@ var _sfc_main = {
     },
     allowMultiselect: {
       type: Boolean,
-      default: true
+      default: !0
     },
     allowToggleBranch: {
       type: Boolean,
-      default: true
-    },
-    multiselectKey: {
-      type: [String, Array],
-      default: function() {
-        return ["ctrlKey", "metaKey"];
-      },
-      validator: function(value) {
-        let allowedKeys = ["ctrlKey", "metaKey", "altKey"];
-        let multiselectKeys = Array.isArray(value) ? value : [value];
-        multiselectKeys = multiselectKeys.filter((keyName) => allowedKeys.indexOf(keyName) !== -1);
-        return !!multiselectKeys.length;
-      }
+      default: !0
     },
     scrollAreaHeight: {
       type: Number,
@@ -57,24 +45,22 @@ var _sfc_main = {
       scrollIntervalId: 0,
       scrollSpeed: 0,
       lastSelectedNode: null,
-      mouseIsDown: false,
-      isDragging: false,
+      mouseIsDown: !1,
+      isDragging: !1,
       lastMousePos: { x: 0, y: 0 },
-      preventDrag: false,
+      preventDrag: !1,
       currentValue: this.modelValue
     };
   },
   mounted() {
-    if (this.isRoot) {
-      document.addEventListener("mouseup", this.onDocumentMouseupHandler);
-    }
+    this.isRoot && document.addEventListener("mouseup", this.onDocumentMouseupHandler);
   },
   beforeDestroy() {
     document.removeEventListener("mouseup", this.onDocumentMouseupHandler);
   },
   watch: {
-    modelValue: function(newValue) {
-      this.currentValue = this.copy(newValue);
+    modelValue: function(e) {
+      this.currentValue = this.copy(e);
     }
   },
   computed: {
@@ -86,19 +72,20 @@ var _sfc_main = {
     },
     nodes() {
       if (this.isRoot) {
-        const nodeModels = this.copy(this.currentValue);
-        return this.getNodes(nodeModels);
+        const e = this.copy(this.currentValue);
+        return this.getNodes(e);
       }
       return this.getParent().nodes[this.parentInd].children;
     },
+    /**
+     * gaps is using for nodes indentation
+     * @returns {number[]}
+     */
     gaps() {
-      const gaps = [];
-      let i = this.level - 1;
-      if (!this.showBranches)
-        i++;
-      while (i-- > 0)
-        gaps.push(i);
-      return gaps;
+      const e = [];
+      let t = this.level - 1;
+      for (this.showBranches || t++; t-- > 0; ) e.push(t);
+      return e;
     },
     isRoot() {
       return !this.level;
@@ -111,671 +98,490 @@ var _sfc_main = {
     }
   },
   methods: {
-    setCursorPosition(pos) {
+    setCursorPosition(e) {
       if (this.isRoot) {
-        this.rootCursorPosition = pos;
+        this.rootCursorPosition = e;
         return;
       }
-      this.getParent().setCursorPosition(pos);
+      this.getParent().setCursorPosition(e);
     },
-    getNodes(nodeModels, parentPath = [], isVisible = true) {
-      return nodeModels.map((nodeModel, ind) => {
-        const nodePath = parentPath.concat(ind);
-        return this.getNode(nodePath, nodeModel, nodeModels, isVisible);
+    getNodes(e, t = [], s = !0) {
+      return e.map((r, i) => {
+        const l = t.concat(i);
+        return this.getNode(l, r, e, s);
       });
     },
-    getNode(path, nodeModel = null, siblings = null, isVisible = null) {
-      const ind = path.slice(-1)[0];
-      siblings = siblings || this.getNodeSiblings(this.currentValue, path);
-      nodeModel = nodeModel || siblings && siblings[ind] || null;
-      if (isVisible == null) {
-        isVisible = this.isVisible(path);
-      }
-      if (!nodeModel)
-        return null;
-      const isExpanded = nodeModel.isExpanded === void 0 ? true : !!nodeModel.isExpanded;
-      const isDraggable = nodeModel.isDraggable === void 0 ? true : !!nodeModel.isDraggable;
-      const isSelectable = nodeModel.isSelectable === void 0 ? true : !!nodeModel.isSelectable;
+    getNode(e, t = null, s = null, r = null) {
+      const i = e.slice(-1)[0];
+      if (s = s || this.getNodeSiblings(this.currentValue, e), t = t || s && s[i] || null, r == null && (r = this.isVisible(e)), !t) return null;
+      const l = t.isExpanded === void 0 ? !0 : !!t.isExpanded, a = t.isDraggable === void 0 ? !0 : !!t.isDraggable, o = t.isSelectable === void 0 ? !0 : !!t.isSelectable;
       return {
-        title: nodeModel.title,
-        isLeaf: !!nodeModel.isLeaf,
-        children: nodeModel.children ? this.getNodes(nodeModel.children, path, isExpanded) : [],
-        isSelected: !!nodeModel.isSelected,
-        isExpanded,
-        isVisible,
-        isDraggable,
-        isSelectable,
-        data: nodeModel.data !== void 0 ? nodeModel.data : {},
-        path,
-        pathStr: JSON.stringify(path),
-        level: path.length,
-        ind,
-        isFirstChild: ind === 0,
-        isLastChild: ind === siblings.length - 1
+        // define the all IPowerTreeNodeModel props
+        title: t.title,
+        isLeaf: !!t.isLeaf,
+        children: t.children ? this.getNodes(t.children, e, l) : [],
+        isSelected: !!t.isSelected,
+        isExpanded: l,
+        isVisible: r,
+        isDraggable: a,
+        isSelectable: o,
+        data: t.data !== void 0 ? t.data : {},
+        // define the all IPowerTreeNode computed props
+        path: e,
+        pathStr: JSON.stringify(e),
+        level: e.length,
+        ind: i,
+        isFirstChild: i === 0,
+        isLastChild: i === s.length - 1
       };
     },
-    isVisible(path) {
-      if (path.length < 2)
-        return true;
-      let nodeModels = this.currentValue;
-      for (let i = 0; i < path.length - 1; i++) {
-        let ind = path[i];
-        let nodeModel = nodeModels[ind];
-        let isExpanded = nodeModel.isExpanded === void 0 ? true : !!nodeModel.isExpanded;
-        if (!isExpanded)
-          return false;
-        nodeModels = nodeModel.children;
+    isVisible(e) {
+      if (e.length < 2) return !0;
+      let t = this.currentValue;
+      for (let s = 0; s < e.length - 1; s++) {
+        let r = e[s], i = t[r];
+        if (!(i.isExpanded === void 0 ? !0 : !!i.isExpanded)) return !1;
+        t = i.children;
       }
-      return true;
+      return !0;
     },
-    emitInput(newValue) {
-      this.currentValue = newValue;
-      this.getRoot().$emit("update:modelValue", newValue);
+    emitInput(e) {
+      this.currentValue = e, this.getRoot().$emit("update:modelValue", e);
     },
-    emitSelect(selectedNodes, event) {
-      this.getRoot().$emit("select", selectedNodes, event);
+    emitSelect(e, t) {
+      this.getRoot().$emit("select", e, t);
     },
-    emitBeforeDrop(draggingNodes, position, cancel) {
-      this.getRoot().$emit("beforedrop", draggingNodes, position, cancel);
+    emitBeforeDrop(e, t, s) {
+      this.getRoot().$emit("beforedrop", e, t, s);
     },
-    emitDrop(draggingNodes, position, event) {
-      this.getRoot().$emit("drop", draggingNodes, position, event);
+    emitDrop(e, t, s) {
+      this.getRoot().$emit("drop", e, t, s);
     },
-    emitToggle(toggledNode, event) {
-      this.getRoot().$emit("toggle", toggledNode, event);
+    emitToggle(e, t) {
+      this.getRoot().$emit("toggle", e, t);
     },
-    emitNodeClick(node, event) {
-      this.getRoot().$emit("nodeclick", node, event);
+    emitNodeClick(e, t) {
+      this.getRoot().$emit("nodeclick", e, t);
     },
-    emitNodeDblclick(node, event) {
-      this.getRoot().$emit("nodedblclick", node, event);
+    emitNodeDblclick(e, t) {
+      this.getRoot().$emit("nodedblclick", e, t);
     },
-    emitNodeContextmenu(node, event) {
-      this.getRoot().$emit("nodecontextmenu", node, event);
+    emitNodeContextmenu(e, t) {
+      this.getRoot().$emit("nodecontextmenu", e, t);
     },
-    onExternalDragoverHandler(node, event) {
-      event.preventDefault();
-      const root = this.getRoot();
-      const cursorPosition = root.getCursorPositionFromCoords(event.clientX, event.clientY);
-      root.setCursorPosition(cursorPosition);
-      root.$emit("externaldragover", cursorPosition, event);
+    onExternalDragoverHandler(e, t) {
+      t.preventDefault();
+      const s = this.getRoot(), r = s.getCursorPositionFromCoords(t.clientX, t.clientY);
+      s.setCursorPosition(r), s.$emit("externaldragover", r, t);
     },
-    onExternalDropHandler(node, event) {
-      const root = this.getRoot();
-      const cursorPosition = root.getCursorPositionFromCoords(event.clientX, event.clientY);
-      root.$emit("externaldrop", cursorPosition, event);
-      this.setCursorPosition(null);
+    onExternalDropHandler(e, t) {
+      const s = this.getRoot(), r = s.getCursorPositionFromCoords(t.clientX, t.clientY);
+      s.$emit("externaldrop", r, t), this.setCursorPosition(null);
     },
-    select(path, addToSelection = false, event = null) {
-      const multiselectKeys = Array.isArray(this.multiselectKey) ? this.multiselectKey : [this.multiselectKey];
-      const multiselectKeyIsPressed = event && !!multiselectKeys.find((key) => event[key]);
-      addToSelection = (multiselectKeyIsPressed || addToSelection) && this.allowMultiselect;
-      const selectedNode = this.getNode(path);
-      if (!selectedNode)
+    select(e, t = !1, s = null) {
+      const r = this.getNode(e);
+      if (!r)
         return null;
-      const newNodes = this.copy(this.currentValue);
-      const shiftSelectionMode = this.allowMultiselect && event && event.shiftKey && this.lastSelectedNode;
-      const selectedNodes = [];
-      let shiftSelectionStarted = false;
-      this.traverse((node, nodeModel) => {
-        if (shiftSelectionMode) {
-          if (node.pathStr === selectedNode.pathStr || node.pathStr === this.lastSelectedNode.pathStr) {
-            nodeModel.isSelected = node.isSelectable;
-            shiftSelectionStarted = !shiftSelectionStarted;
-          }
-          if (shiftSelectionStarted)
-            nodeModel.isSelected = node.isSelectable;
-        } else if (node.pathStr === selectedNode.pathStr) {
-          nodeModel.isSelected = node.isSelectable;
-        } else if (!addToSelection) {
-          if (nodeModel.isSelected)
-            nodeModel.isSelected = false;
-        }
-        if (nodeModel.isSelected) {
-          selectedNodes.push(node);
-        }
-      }, newNodes);
-      this.lastSelectedNode = selectedNode;
-      this.emitInput(newNodes);
-      this.emitSelect(selectedNodes, event);
-      return selectedNode;
+      const l = s && !!["ctrlKey", "metaKey"].find((d) => s[d]) && this.allowMultiselect, o = s && s.shiftKey && this.allowMultiselect && this.lastSelectedNode;
+      t = (l || t) && this.allowMultiselect;
+      const u = this.currentValue, n = [];
+      let v = !1;
+      return this.traverse((d, p) => {
+        o ? ((d.pathStr === r.pathStr || d.pathStr === this.lastSelectedNode.pathStr) && (p.isSelected = d.isSelectable, v = !v), v && (p.isSelected = d.isSelectable)) : d.pathStr === r.pathStr ? p.isSelected = p.isSelected ? !1 : d.isSelectable : t || p.isSelected && (p.isSelected = !1), p.isSelected && n.push(p);
+      }, u), this.lastSelectedNode = r, this.emitInput(u), this.emitSelect(n, s), r;
     },
-    onMousemoveHandler(event) {
+    onMousemoveHandler(e) {
       if (!this.isRoot) {
-        this.getRoot().onMousemoveHandler(event);
+        this.getRoot().onMousemoveHandler(e);
         return;
       }
-      if (this.preventDrag) {
+      if (this.preventDrag)
+        return;
+      const t = this.isDragging, s = this.isDragging || this.mouseIsDown && (this.lastMousePos.x !== e.clientX || this.lastMousePos.y !== e.clientY), r = t === !1 && s === !0;
+      if (this.lastMousePos = {
+        x: e.clientX,
+        y: e.clientY
+      }, !s) return;
+      const i = this.getRoot().$el, l = i.getBoundingClientRect(), a = this.$refs.dragInfo, o = e.clientY - l.top + i.scrollTop - (a.style.marginBottom | 0), u = e.clientX - l.left;
+      a.style.top = o + "px", a.style.left = u + "px";
+      const n = this.getCursorPositionFromCoords(e.clientX, e.clientY), v = n.node, d = n.placement;
+      if (r && !v.isSelected && this.select(v.path, !1, e), !this.getDraggable().length) {
+        this.preventDrag = !0;
         return;
       }
-      const initialDraggingState = this.isDragging;
-      const isDragging = this.isDragging || this.mouseIsDown && (this.lastMousePos.x !== event.clientX || this.lastMousePos.y !== event.clientY);
-      const isDragStarted = initialDraggingState === false && isDragging === true;
-      this.lastMousePos = {
-        x: event.clientX,
-        y: event.clientY
-      };
-      if (!isDragging)
-        return;
-      const $root = this.getRoot().$el;
-      const rootRect = $root.getBoundingClientRect();
-      const $dragInfo = this.$refs.dragInfo;
-      const dragInfoTop = event.clientY - rootRect.top + $root.scrollTop - ($dragInfo.style.marginBottom | 0);
-      const dragInfoLeft = event.clientX - rootRect.left;
-      $dragInfo.style.top = dragInfoTop + "px";
-      $dragInfo.style.left = dragInfoLeft + "px";
-      const cursorPosition = this.getCursorPositionFromCoords(event.clientX, event.clientY);
-      const destNode = cursorPosition.node;
-      const placement = cursorPosition.placement;
-      if (isDragStarted && !destNode.isSelected) {
-        this.select(destNode.path, false, event);
-      }
-      const draggableNodes = this.getDraggable();
-      if (!draggableNodes.length) {
-        this.preventDrag = true;
-        return;
-      }
-      this.isDragging = isDragging;
-      this.setCursorPosition({ node: destNode, placement });
-      const scrollBottomLine = rootRect.bottom - this.scrollAreaHeight;
-      const scrollDownSpeed = (event.clientY - scrollBottomLine) / (rootRect.bottom - scrollBottomLine);
-      const scrollTopLine = rootRect.top + this.scrollAreaHeight;
-      const scrollTopSpeed = (scrollTopLine - event.clientY) / (scrollTopLine - rootRect.top);
-      if (scrollDownSpeed > 0) {
-        this.startScroll(scrollDownSpeed);
-      } else if (scrollTopSpeed > 0) {
-        this.startScroll(-scrollTopSpeed);
+      this.isDragging = s, this.setCursorPosition({ node: v, placement: d });
+      const P = l.bottom - this.scrollAreaHeight, y = (e.clientY - P) / (l.bottom - P), C = l.top + this.scrollAreaHeight, I = (C - e.clientY) / (C - l.top);
+      y > 0 ? this.startScroll(y) : I > 0 ? this.startScroll(-I) : this.stopScroll();
+    },
+    getCursorPositionFromCoords(e, t) {
+      const s = document.elementFromPoint(e, t), r = s.getAttribute("path") ? s : this.getClosetElementWithPath(s);
+      let i, l;
+      if (r) {
+        if (!r) return;
+        i = this.getNode(JSON.parse(r.getAttribute("path")));
+        const a = r.offsetHeight, o = this.edgeSize, u = t - r.getBoundingClientRect().top;
+        i.isLeaf ? l = u >= a / 2 ? "after" : "before" : u <= o ? l = "before" : u >= a - o ? l = "after" : l = "inside";
       } else {
-        this.stopScroll();
+        const o = this.getRoot().$el.getBoundingClientRect();
+        t > o.top + o.height / 2 ? (l = "after", i = this.getLastNode()) : (l = "before", i = this.getFirstNode());
       }
+      return { node: i, placement: l };
     },
-    getCursorPositionFromCoords(x, y) {
-      const $target = document.elementFromPoint(x, y);
-      const $nodeItem = $target.getAttribute("path") ? $target : this.getClosetElementWithPath($target);
-      let destNode;
-      let placement;
-      if ($nodeItem) {
-        if (!$nodeItem)
-          return;
-        destNode = this.getNode(JSON.parse($nodeItem.getAttribute("path")));
-        const nodeHeight = $nodeItem.offsetHeight;
-        const edgeSize = this.edgeSize;
-        const offsetY = y - $nodeItem.getBoundingClientRect().top;
-        if (destNode.isLeaf) {
-          placement = offsetY >= nodeHeight / 2 ? "after" : "before";
-        } else {
-          if (offsetY <= edgeSize) {
-            placement = "before";
-          } else if (offsetY >= nodeHeight - edgeSize) {
-            placement = "after";
-          } else {
-            placement = "inside";
-          }
-        }
-      } else {
-        const $root = this.getRoot().$el;
-        const rootRect = $root.getBoundingClientRect();
-        if (y > rootRect.top + rootRect.height / 2) {
-          placement = "after";
-          destNode = this.getLastNode();
-        } else {
-          placement = "before";
-          destNode = this.getFirstNode();
-        }
-      }
-      return { node: destNode, placement };
+    getClosetElementWithPath(e) {
+      return e ? e.getAttribute("path") ? e : this.getClosetElementWithPath(e.parentElement) : null;
     },
-    getClosetElementWithPath($el) {
-      if (!$el)
-        return null;
-      if ($el.getAttribute("path"))
-        return $el;
-      return this.getClosetElementWithPath($el.parentElement);
+    onMouseleaveHandler(e) {
+      if (!this.isRoot || !this.isDragging) return;
+      const s = this.getRoot().$el.getBoundingClientRect();
+      e.clientY >= s.bottom ? this.setCursorPosition({ node: this.nodes.slice(-1)[0], placement: "after" }) : e.clientY < s.top && this.setCursorPosition({ node: this.getFirstNode(), placement: "before" });
     },
-    onMouseleaveHandler(event) {
-      if (!this.isRoot || !this.isDragging)
-        return;
-      const $root = this.getRoot().$el;
-      const rootRect = $root.getBoundingClientRect();
-      if (event.clientY >= rootRect.bottom) {
-        this.setCursorPosition({ node: this.nodes.slice(-1)[0], placement: "after" });
-      } else if (event.clientY < rootRect.top) {
-        this.setCursorPosition({ node: this.getFirstNode(), placement: "before" });
-      }
-    },
-    getNodeEl(path) {
-      this.getRoot().$el.querySelector(`[path="${JSON.stringify(path)}"]`);
+    getNodeEl(e) {
+      this.getRoot().$el.querySelector(`[path="${JSON.stringify(e)}"]`);
     },
     getLastNode() {
-      let lastNode = null;
-      this.traverse((node) => {
-        lastNode = node;
-      });
-      return lastNode;
+      let e = null;
+      return this.traverse((t) => {
+        e = t;
+      }), e;
     },
     getFirstNode() {
       return this.getNode([0]);
     },
-    getNextNode(path, filter = null) {
-      let resultNode = null;
-      this.traverse((node) => {
-        if (this.comparePaths(node.path, path) < 1) {
-          return;
-        }
-        if (!filter || filter(node)) {
-          resultNode = node;
-          return false;
-        }
-      });
-      return resultNode;
+    getNextNode(e, t = null) {
+      let s = null;
+      return this.traverse((r) => {
+        if (!(this.comparePaths(r.path, e) < 1) && (!t || t(r)))
+          return s = r, !1;
+      }), s;
     },
-    getPrevNode(path, filter) {
-      let prevNodes = [];
-      this.traverse((node) => {
-        if (this.comparePaths(node.path, path) >= 0) {
-          return false;
-        }
-        prevNodes.push(node);
+    getPrevNode(e, t) {
+      let s = [];
+      this.traverse((i) => {
+        if (this.comparePaths(i.path, e) >= 0)
+          return !1;
+        s.push(i);
       });
-      let i = prevNodes.length;
-      while (i--) {
-        const node = prevNodes[i];
-        if (!filter || filter(node))
-          return node;
+      let r = s.length;
+      for (; r--; ) {
+        const i = s[r];
+        if (!t || t(i)) return i;
       }
       return null;
     },
-    comparePaths(path1, path2) {
-      for (let i = 0; i < path1.length; i++) {
-        if (path2[i] === void 0)
-          return 1;
-        if (path1[i] > path2[i])
-          return 1;
-        if (path1[i] < path2[i])
-          return -1;
+    /**
+     * returns 1 if path1 > path2
+     * returns -1 if path1 < path2
+     * returns 0 if path1 == path2
+     *
+     * examples
+     *
+     * [1, 2, 3] < [1, 2, 4]
+     * [1, 1, 3] < [1, 2, 3]
+     * [1, 2, 3] > [1, 2, 0]
+     * [1, 2, 3] > [1, 1, 3]
+     * [1, 2] < [1, 2, 0]
+     *
+     */
+    comparePaths(e, t) {
+      for (let s = 0; s < e.length; s++) {
+        if (t[s] === void 0 || e[s] > t[s]) return 1;
+        if (e[s] < t[s]) return -1;
       }
-      return path2[path1.length] === void 0 ? 0 : -1;
+      return t[e.length] === void 0 ? 0 : -1;
     },
-    onNodeMousedownHandler(event, node) {
-      if (event.button !== 0)
-        return;
-      if (!this.isRoot) {
-        this.getRoot().onNodeMousedownHandler(event, node);
-        return;
+    onNodeMousedownHandler(e, t) {
+      if (e.button === 0) {
+        if (!this.isRoot) {
+          this.getRoot().onNodeMousedownHandler(e, t);
+          return;
+        }
+        this.mouseIsDown = !0;
       }
-      this.mouseIsDown = true;
     },
-    startScroll(speed) {
-      const $root = this.getRoot().$el;
-      if (this.scrollSpeed === speed) {
-        return;
-      } else if (this.scrollIntervalId) {
-        this.stopScroll();
-      }
-      this.scrollSpeed = speed;
-      this.scrollIntervalId = setInterval(() => {
-        $root.scrollTop += this.maxScrollSpeed * speed;
-      }, 20);
+    startScroll(e) {
+      const t = this.getRoot().$el;
+      this.scrollSpeed !== e && (this.scrollIntervalId && this.stopScroll(), this.scrollSpeed = e, this.scrollIntervalId = setInterval(() => {
+        t.scrollTop += this.maxScrollSpeed * e;
+      }, 20));
     },
     stopScroll() {
-      clearInterval(this.scrollIntervalId);
-      this.scrollIntervalId = 0;
-      this.scrollSpeed = 0;
+      clearInterval(this.scrollIntervalId), this.scrollIntervalId = 0, this.scrollSpeed = 0;
     },
-    onDocumentMouseupHandler(event) {
-      if (this.isDragging)
-        this.onNodeMouseupHandler(event);
+    onDocumentMouseupHandler(e) {
+      this.isDragging && this.onNodeMouseupHandler(e);
     },
-    onNodeMouseupHandler(event, targetNode = null) {
-      if (event.button !== 0) {
+    onNodeMouseupHandler(e, t = null) {
+      if (e.button !== 0)
         return;
-      }
       if (!this.isRoot) {
-        this.getRoot().onNodeMouseupHandler(event, targetNode);
+        this.getRoot().onNodeMouseupHandler(e, t);
         return;
       }
-      this.mouseIsDown = false;
-      if (!this.isDragging && targetNode && !this.preventDrag && event.currentTarget.dataset.tree === "title") {
-        this.select(targetNode.path, false, event);
-      }
-      this.preventDrag = false;
-      if (!this.cursorPosition) {
+      if (this.mouseIsDown = !1, !this.isDragging && t && !this.preventDrag && e.currentTarget.dataset.tree === "title" && this.select(t.path, !1, e), this.preventDrag = !1, !this.cursorPosition) {
         this.stopDrag();
         return;
       }
-      const draggingNodes = this.getDraggable();
-      for (let draggingNode of draggingNodes) {
-        if (draggingNode.pathStr === this.cursorPosition.node.pathStr) {
+      const s = this.getDraggable();
+      for (let o of s) {
+        if (o.pathStr === this.cursorPosition.node.pathStr) {
           this.stopDrag();
           return;
         }
-        if (this.checkNodeIsParent(draggingNode, this.cursorPosition.node)) {
+        if (this.checkNodeIsParent(o, this.cursorPosition.node)) {
           this.stopDrag();
           return;
         }
       }
-      const newNodes = this.copy(this.currentValue);
-      const nodeModelsSubjectToInsert = [];
-      for (let draggingNode of draggingNodes) {
-        const sourceSiblings = this.getNodeSiblings(newNodes, draggingNode.path);
-        const draggingNodeModel = sourceSiblings[draggingNode.ind];
-        nodeModelsSubjectToInsert.push(draggingNodeModel);
+      const r = this.copy(this.currentValue), i = [];
+      for (let o of s) {
+        const n = this.getNodeSiblings(r, o.path)[o.ind];
+        i.push(n);
       }
-      let cancelled = false;
-      this.emitBeforeDrop(draggingNodes, this.cursorPosition, () => cancelled = true);
-      if (cancelled) {
+      let l = !1;
+      if (this.emitBeforeDrop(s, this.cursorPosition, () => l = !0), l) {
         this.stopDrag();
         return;
       }
-      const nodeModelsToInsert = [];
-      for (let draggingNodeModel of nodeModelsSubjectToInsert) {
-        nodeModelsToInsert.push(this.copy(draggingNodeModel));
-        draggingNodeModel["_markToDelete"] = true;
-      }
-      this.insertModels(this.cursorPosition, nodeModelsToInsert, newNodes);
-      this.traverseModels((nodeModel, siblings, ind) => {
-        if (!nodeModel._markToDelete)
-          return;
-        siblings.splice(ind, 1);
-      }, newNodes);
-      this.lastSelectedNode = null;
-      this.emitInput(newNodes);
-      this.emitDrop(draggingNodes, this.cursorPosition, event);
-      this.stopDrag();
+      const a = [];
+      for (let o of i)
+        a.push(this.copy(o)), o._markToDelete = !0;
+      this.insertModels(this.cursorPosition, a, r), this.traverseModels((o, u, n) => {
+        o._markToDelete && u.splice(n, 1);
+      }, r), this.lastSelectedNode = null, this.emitInput(r), this.emitDrop(s, this.cursorPosition, e), this.stopDrag();
     },
-    onToggleHandler(event, node) {
-      if (!this.allowToggleBranch) {
-        return;
-      }
-      this.updateNode(node.path, { isExpanded: !node.isExpanded });
-      this.emitToggle(node, event);
-      event.stopPropagation();
+    onToggleHandler(e, t) {
+      this.allowToggleBranch && (this.updateNode(t.path, { isExpanded: !t.isExpanded }), this.emitToggle(t, e), e.stopPropagation());
     },
     stopDrag() {
-      this.isDragging = false;
-      this.mouseIsDown = false;
-      this.setCursorPosition(null);
-      this.stopScroll();
+      this.isDragging = !1, this.mouseIsDown = !1, this.setCursorPosition(null), this.stopScroll();
     },
     getParent() {
       return this.$parent;
     },
     getRoot() {
-      if (this.isRoot)
-        return this;
-      return this.getParent().getRoot();
+      return this.isRoot ? this : this.getParent().getRoot();
     },
-    getNodeSiblings(nodes, path) {
-      if (path.length === 1)
-        return nodes;
-      return this.getNodeSiblings(nodes[path[0]].children, path.slice(1));
+    getNodeSiblings(e, t) {
+      return t.length === 1 ? e : this.getNodeSiblings(e[t[0]].children, t.slice(1));
     },
-    updateNode(path, patch) {
+    updateNode(e, t) {
       if (!this.isRoot) {
-        this.getParent().updateNode(path, patch);
+        this.getParent().updateNode(e, t);
         return;
       }
-      const pathStr = JSON.stringify(path);
-      const newNodes = this.copy(this.currentValue);
-      this.traverse((node, nodeModel) => {
-        if (node.pathStr !== pathStr)
-          return;
-        Object.assign(nodeModel, patch);
-      }, newNodes);
-      this.emitInput(newNodes);
+      const s = JSON.stringify(e), r = this.copy(this.currentValue);
+      this.traverse((i, l) => {
+        i.pathStr === s && Object.assign(l, t);
+      }, r), this.emitInput(r);
     },
     getSelected() {
-      const selectedNodes = [];
-      this.traverse((node) => {
-        if (node.isSelected)
-          selectedNodes.push(node);
-      });
-      return selectedNodes;
+      const e = [];
+      return this.traverse((t) => {
+        t.isSelected && e.push(t);
+      }), e;
     },
     getDraggable() {
-      const selectedNodes = [];
-      this.traverse((node) => {
-        if (node.isSelected && node.isDraggable)
-          selectedNodes.push(node);
-      });
-      return selectedNodes;
+      const e = [];
+      return this.traverse((t) => {
+        t.isSelected && t.isDraggable && e.push(t);
+      }), e;
     },
-    traverse(cb, nodeModels = null, parentPath = []) {
-      if (!nodeModels)
-        nodeModels = this.currentValue;
-      let shouldStop = false;
-      const nodes = [];
-      for (let nodeInd = 0; nodeInd < nodeModels.length; nodeInd++) {
-        const nodeModel = nodeModels[nodeInd];
-        const itemPath = parentPath.concat(nodeInd);
-        const node = this.getNode(itemPath, nodeModel, nodeModels);
-        shouldStop = cb(node, nodeModel, nodeModels) === false;
-        nodes.push(node);
-        if (shouldStop)
+    traverse(e, t = null, s = []) {
+      t || (t = this.currentValue);
+      let r = !1;
+      const i = [];
+      for (let l = 0; l < t.length; l++) {
+        const a = t[l], o = s.concat(l), u = this.getNode(o, a, t);
+        if (r = e(u, a, t) === !1, i.push(u), r || a.children && (r = this.traverse(e, a.children, o) === !1, r))
           break;
-        if (nodeModel.children) {
-          shouldStop = this.traverse(cb, nodeModel.children, itemPath) === false;
-          if (shouldStop)
-            break;
-        }
       }
-      return !shouldStop ? nodes : false;
+      return r ? !1 : i;
     },
-    traverseModels(cb, nodeModels) {
-      let i = nodeModels.length;
-      while (i--) {
-        const nodeModel = nodeModels[i];
-        if (nodeModel.children)
-          this.traverseModels(cb, nodeModel.children);
-        cb(nodeModel, nodeModels, i);
+    traverseModels(e, t) {
+      let s = t.length;
+      for (; s--; ) {
+        const r = t[s];
+        r.children && this.traverseModels(e, r.children), e(r, t, s);
       }
-      return nodeModels;
+      return t;
     },
-    remove(paths) {
-      const pathsStr = paths.map((path) => JSON.stringify(path));
-      const newNodes = this.copy(this.currentValue);
-      this.traverse((node, nodeModel, siblings) => {
-        for (const pathStr of pathsStr) {
-          if (node.pathStr === pathStr)
-            nodeModel._markToDelete = true;
-        }
-      }, newNodes);
-      this.traverseModels((nodeModel, siblings, ind) => {
-        if (!nodeModel._markToDelete)
-          return;
-        siblings.splice(ind, 1);
-      }, newNodes);
-      this.emitInput(newNodes);
+    remove(e) {
+      const t = e.map((r) => JSON.stringify(r)), s = this.copy(this.currentValue);
+      this.traverse((r, i, l) => {
+        for (const a of t)
+          r.pathStr === a && (i._markToDelete = !0);
+      }, s), this.traverseModels((r, i, l) => {
+        r._markToDelete && i.splice(l, 1);
+      }, s), this.emitInput(s);
     },
-    insertModels(cursorPosition, nodeModels, newNodes) {
-      const destNode = cursorPosition.node;
-      const destSiblings = this.getNodeSiblings(newNodes, destNode.path);
-      const destNodeModel = destSiblings[destNode.ind];
-      if (cursorPosition.placement === "inside") {
-        destNodeModel.children = destNodeModel.children || [];
-        destNodeModel.children.unshift(...nodeModels);
-      } else {
-        const insertInd = cursorPosition.placement === "before" ? destNode.ind : destNode.ind + 1;
-        destSiblings.splice(insertInd, 0, ...nodeModels);
+    insertModels(e, t, s) {
+      const r = e.node, i = this.getNodeSiblings(s, r.path), l = i[r.ind];
+      if (e.placement === "inside")
+        l.children = l.children || [], l.children.unshift(...t);
+      else {
+        const a = e.placement === "before" ? r.ind : r.ind + 1;
+        i.splice(a, 0, ...t);
       }
     },
-    insert(cursorPosition, nodeModel) {
-      const nodeModels = Array.isArray(nodeModel) ? nodeModel : [nodeModel];
-      const newNodes = this.copy(this.currentValue);
-      this.insertModels(cursorPosition, nodeModels, newNodes);
-      this.emitInput(newNodes);
+    insert(e, t) {
+      const s = Array.isArray(t) ? t : [t], r = this.copy(this.currentValue);
+      this.insertModels(e, s, r), this.emitInput(r);
     },
-    checkNodeIsParent(sourceNode, destNode) {
-      const destPath = destNode.path;
-      return JSON.stringify(destPath.slice(0, sourceNode.path.length)) === sourceNode.pathStr;
+    checkNodeIsParent(e, t) {
+      const s = t.path;
+      return JSON.stringify(s.slice(0, e.path.length)) === e.pathStr;
     },
-    copy(entity) {
-      return JSON.parse(JSON.stringify(entity));
+    copy(e) {
+      return JSON.parse(JSON.stringify(e));
     }
   }
-};
-var _export_sfc = (sfc, props) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props) {
-    target[key] = val;
-  }
-  return target;
-};
-const _hoisted_1 = {
+}, M = (e, t) => {
+  const s = e.__vccOpts || e;
+  for (const [r, i] of t)
+    s[r] = i;
+  return s;
+}, V = {
   ref: "nodes",
   class: "vue-power-tree-nodes-list"
-};
-const _hoisted_2 = ["path"];
-const _hoisted_3 = { class: "vue-power-tree-gap" };
-const _hoisted_4 = {
+}, z = ["path"], Y = { class: "vue-power-tree-gap" }, F = {
   key: 0,
   class: "vue-power-tree-branch"
-};
-const _hoisted_5 = { key: 0 };
-const _hoisted_6 = { key: 1 };
-const _hoisted_7 = {
+}, O = { key: 0 }, A = { key: 1 }, J = {
   class: "vue-power-tree-row",
   "data-tree": "row"
-};
-const _hoisted_8 = ["onClick"];
-const _hoisted_9 = ["onMousedown", "onMouseup", "onContextmenu", "onDblclick", "onClick", "onDragover", "onDrop"];
-const _hoisted_10 = {
+}, K = ["onClick"], X = ["onMousedown", "onMouseup", "onContextmenu", "onDblclick", "onClick", "onDragover", "onDrop"], W = {
   class: "vue-power-tree-sidebar",
   "data-tree": "sidebar"
-};
-const _hoisted_11 = {
+}, j = {
   key: 0,
   ref: "dragInfo",
   class: "vue-power-tree-drag-info"
 };
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_power_tree = resolveComponent("power-tree", true);
-  return openBlock(), createElementBlock("div", {
-    class: normalizeClass(["vue-power-tree", { "vue-power-tree-root": _ctx.isRoot }]),
-    onMousemove: _cache[3] || (_cache[3] = (...args) => _ctx.onMousemoveHandler && _ctx.onMousemoveHandler(...args)),
-    onMouseleave: _cache[4] || (_cache[4] = (...args) => _ctx.onMouseleaveHandler && _ctx.onMouseleaveHandler(...args)),
-    onDragend: _cache[5] || (_cache[5] = ($event) => _ctx.onDragendHandler(null, $event))
+function q(e, t, s, r, i, l) {
+  const a = H("power-tree", !0);
+  return h(), c("div", {
+    class: w(["vue-power-tree", { "vue-power-tree-root": e.isRoot }]),
+    onMousemove: t[3] || (t[3] = (...o) => e.onMousemoveHandler && e.onMousemoveHandler(...o)),
+    onMouseleave: t[4] || (t[4] = (...o) => e.onMouseleaveHandler && e.onMouseleaveHandler(...o)),
+    onDragend: t[5] || (t[5] = (o) => e.onDragendHandler(null, o))
   }, [
-    createElementVNode("div", _hoisted_1, [
-      (openBlock(true), createElementBlock(Fragment, null, renderList(_ctx.nodes, (node, nodeInd) => {
-        return openBlock(), createElementBlock("div", {
-          class: normalizeClass(["vue-power-tree-node", { "vue-power-tree-selected": node.isSelected }])
+    f("div", V, [
+      (h(!0), c(R, null, $(e.nodes, (o, u) => (h(), c("div", {
+        class: w(["vue-power-tree-node", { "vue-power-tree-selected": o.isSelected }])
+      }, [
+        f("div", {
+          class: "vue-power-tree-cursor vue-power-tree-cursor_before",
+          onDragover: t[0] || (t[0] = D(() => {
+          }, ["prevent"])),
+          style: k({
+            visibility: e.cursorPosition && e.cursorPosition.node.pathStr === o.pathStr && e.cursorPosition.placement === "before" ? "visible" : "hidden",
+            "--depth": e.depth
+          })
+        }, null, 36),
+        f("div", {
+          class: w(["vue-power-tree-node-item", {
+            "vue-power-tree-cursor-hover": e.cursorPosition && e.cursorPosition.node.pathStr === o.pathStr,
+            "vue-power-tree-cursor-inside": e.cursorPosition && e.cursorPosition.placement === "inside" && e.cursorPosition.node.pathStr === o.pathStr,
+            "vue-power-tree-node-is-leaf": o.isLeaf,
+            "vue-power-tree-node-is-folder": !o.isLeaf
+          }]),
+          path: o.pathStr
         }, [
-          createElementVNode("div", {
-            class: "vue-power-tree-cursor vue-power-tree-cursor_before",
-            onDragover: _cache[0] || (_cache[0] = withModifiers(() => {
-            }, ["prevent"])),
-            style: normalizeStyle({
-              "visibility": _ctx.cursorPosition && _ctx.cursorPosition.node.pathStr === node.pathStr && _ctx.cursorPosition.placement === "before" ? "visible" : "hidden",
-              "--depth": _ctx.depth
-            })
-          }, null, 36),
-          createElementVNode("div", {
-            class: normalizeClass(["vue-power-tree-node-item", {
-              "vue-power-tree-cursor-hover": _ctx.cursorPosition && _ctx.cursorPosition.node.pathStr === node.pathStr,
-              "vue-power-tree-cursor-inside": _ctx.cursorPosition && _ctx.cursorPosition.placement === "inside" && _ctx.cursorPosition.node.pathStr === node.pathStr,
-              "vue-power-tree-node-is-leaf": node.isLeaf,
-              "vue-power-tree-node-is-folder": !node.isLeaf
-            }]),
-            path: node.pathStr
-          }, [
-            (openBlock(true), createElementBlock(Fragment, null, renderList(_ctx.gaps, (gapInd) => {
-              return openBlock(), createElementBlock("div", _hoisted_3);
-            }), 256)),
-            _ctx.level && _ctx.showBranches ? (openBlock(), createElementBlock("div", _hoisted_4, [
-              renderSlot(_ctx.$slots, "branch", { node }, () => [
-                !node.isLastChild ? (openBlock(), createElementBlock("span", _hoisted_5, toDisplayString(String.fromCharCode(9500)) + toDisplayString(String.fromCharCode(9472)) + "\xA0 ", 1)) : createCommentVNode("", true),
-                node.isLastChild ? (openBlock(), createElementBlock("span", _hoisted_6, toDisplayString(String.fromCharCode(9492)) + toDisplayString(String.fromCharCode(9472)) + "\xA0 ", 1)) : createCommentVNode("", true)
-              ])
-            ])) : createCommentVNode("", true),
-            createElementVNode("div", _hoisted_7, [
-              !node.isLeaf ? (openBlock(), createElementBlock("span", {
-                key: 0,
-                class: "vue-power-tree-toggle",
-                onClick: ($event) => _ctx.onToggleHandler($event, node)
-              }, [
-                renderSlot(_ctx.$slots, "toggle", { node }, () => [
-                  createElementVNode("span", null, toDisplayString(!node.isLeaf ? node.isExpanded ? "-" : "+" : ""), 1)
-                ])
-              ], 8, _hoisted_8)) : createCommentVNode("", true),
-              createElementVNode("span", {
-                onMousedown: ($event) => _ctx.onNodeMousedownHandler($event, node),
-                onMouseup: ($event) => _ctx.onNodeMouseupHandler($event, node),
-                onContextmenu: ($event) => _ctx.emitNodeContextmenu(node, $event),
-                onDblclick: ($event) => _ctx.emitNodeDblclick(node, $event),
-                onClick: ($event) => _ctx.emitNodeClick(node, $event),
-                onDragover: ($event) => _ctx.onExternalDragoverHandler(node, $event),
-                onDrop: ($event) => _ctx.onExternalDropHandler(node, $event),
-                "data-tree": "title",
-                class: "vue-power-tree-title"
-              }, [
-                renderSlot(_ctx.$slots, "title", { node }, () => [
-                  createTextVNode(toDisplayString(node.title), 1)
-                ])
-              ], 40, _hoisted_9),
-              !node.isLeaf && node.children.length == 0 && node.isExpanded ? renderSlot(_ctx.$slots, "empty-node", {
-                key: 1,
-                node
-              }) : createCommentVNode("", true)
-            ]),
-            createElementVNode("div", _hoisted_10, [
-              renderSlot(_ctx.$slots, "sidebar", { node })
+          (h(!0), c(R, null, $(e.gaps, (n) => (h(), c("div", Y))), 256)),
+          e.level && e.showBranches ? (h(), c("div", F, [
+            g(e.$slots, "branch", { node: o }, () => [
+              o.isLastChild ? S("", !0) : (h(), c("span", O, m("├") + m("─") + "  ", 1)),
+              o.isLastChild ? (h(), c("span", A, m("└") + m("─") + "  ", 1)) : S("", !0)
             ])
-          ], 10, _hoisted_2),
-          node.children && node.children.length && node.isExpanded ? (openBlock(), createBlock(_component_power_tree, {
-            key: 0,
-            value: node.children,
-            level: node.level,
-            parentInd: nodeInd,
-            allowMultiselect: _ctx.allowMultiselect,
-            allowToggleBranch: _ctx.allowToggleBranch,
-            edgeSize: _ctx.edgeSize,
-            showBranches: _ctx.showBranches,
-            onDragover: _cache[1] || (_cache[1] = withModifiers(() => {
-            }, ["prevent"]))
-          }, {
-            title: withCtx(({ node: node2 }) => [
-              renderSlot(_ctx.$slots, "title", { node: node2 }, () => [
-                createTextVNode(toDisplayString(node2.title), 1)
+          ])) : S("", !0),
+          f("div", J, [
+            o.isLeaf ? S("", !0) : (h(), c("span", {
+              key: 0,
+              class: "vue-power-tree-toggle",
+              onClick: (n) => e.onToggleHandler(n, o)
+            }, [
+              g(e.$slots, "toggle", { node: o }, () => [
+                f("span", null, m(o.isLeaf ? "" : o.isExpanded ? "-" : "+"), 1)
               ])
-            ]),
-            toggle: withCtx(({ node: node2 }) => [
-              renderSlot(_ctx.$slots, "toggle", { node: node2 }, () => [
-                createElementVNode("span", null, toDisplayString(!node2.isLeaf ? node2.isExpanded ? "-" : "+" : ""), 1)
+            ], 8, K)),
+            f("span", {
+              onMousedown: (n) => e.onNodeMousedownHandler(n, o),
+              onMouseup: (n) => e.onNodeMouseupHandler(n, o),
+              onContextmenu: (n) => e.emitNodeContextmenu(o, n),
+              onDblclick: (n) => e.emitNodeDblclick(o, n),
+              onClick: (n) => e.emitNodeClick(o, n),
+              onDragover: (n) => e.onExternalDragoverHandler(o, n),
+              onDrop: (n) => e.onExternalDropHandler(o, n),
+              "data-tree": "title",
+              class: "vue-power-tree-title"
+            }, [
+              g(e.$slots, "title", { node: o }, () => [
+                b(m(o.title), 1)
               ])
-            ]),
-            sidebar: withCtx(({ node: node2 }) => [
-              renderSlot(_ctx.$slots, "sidebar", { node: node2 })
-            ]),
-            "empty-node": withCtx(({ node: node2 }) => [
-              !node2.isLeaf && node2.children.length === 0 && node2.isExpanded ? renderSlot(_ctx.$slots, "empty-node", {
-                key: 0,
-                node: node2
-              }) : createCommentVNode("", true)
-            ]),
-            _: 2
-          }, 1032, ["value", "level", "parentInd", "allowMultiselect", "allowToggleBranch", "edgeSize", "showBranches"])) : createCommentVNode("", true),
-          createElementVNode("div", {
-            class: "vue-power-tree-cursor vue-power-tree-cursor_after",
-            onDragover: _cache[2] || (_cache[2] = withModifiers(() => {
-            }, ["prevent"])),
-            style: normalizeStyle({
-              "visibility": _ctx.cursorPosition && _ctx.cursorPosition.node.pathStr === node.pathStr && _ctx.cursorPosition.placement === "after" ? "visible" : "hidden",
-              "--depth": _ctx.depth
-            })
-          }, null, 36)
-        ], 2);
-      }), 256)),
-      _ctx.isRoot ? withDirectives((openBlock(), createElementBlock("div", _hoisted_11, [
-        renderSlot(_ctx.$slots, "draginfo", {}, () => [
-          createTextVNode(" Items: " + toDisplayString(_ctx.selectionSize), 1)
+            ], 40, X),
+            !o.isLeaf && o.children.length == 0 && o.isExpanded ? g(e.$slots, "empty-node", {
+              key: 1,
+              node: o
+            }) : S("", !0)
+          ]),
+          f("div", W, [
+            g(e.$slots, "sidebar", { node: o })
+          ])
+        ], 10, z),
+        o.children && o.children.length && o.isExpanded ? (h(), E(a, {
+          key: 0,
+          value: o.children,
+          level: o.level,
+          parentInd: u,
+          allowMultiselect: e.allowMultiselect,
+          allowToggleBranch: e.allowToggleBranch,
+          edgeSize: e.edgeSize,
+          showBranches: e.showBranches,
+          onDragover: t[1] || (t[1] = D(() => {
+          }, ["prevent"]))
+        }, {
+          title: N(({ node: n }) => [
+            g(e.$slots, "title", { node: n }, () => [
+              b(m(n.title), 1)
+            ])
+          ]),
+          toggle: N(({ node: n }) => [
+            g(e.$slots, "toggle", { node: n }, () => [
+              f("span", null, m(n.isLeaf ? "" : n.isExpanded ? "-" : "+"), 1)
+            ])
+          ]),
+          sidebar: N(({ node: n }) => [
+            g(e.$slots, "sidebar", { node: n })
+          ]),
+          "empty-node": N(({ node: n }) => [
+            !n.isLeaf && n.children.length === 0 && n.isExpanded ? g(e.$slots, "empty-node", {
+              key: 0,
+              node: n
+            }) : S("", !0)
+          ]),
+          _: 2
+        }, 1032, ["value", "level", "parentInd", "allowMultiselect", "allowToggleBranch", "edgeSize", "showBranches"])) : S("", !0),
+        f("div", {
+          class: "vue-power-tree-cursor vue-power-tree-cursor_after",
+          onDragover: t[2] || (t[2] = D(() => {
+          }, ["prevent"])),
+          style: k({
+            visibility: e.cursorPosition && e.cursorPosition.node.pathStr === o.pathStr && e.cursorPosition.placement === "after" ? "visible" : "hidden",
+            "--depth": e.depth
+          })
+        }, null, 36)
+      ], 2))), 256)),
+      e.isRoot ? B((h(), c("div", j, [
+        g(e.$slots, "draginfo", {}, () => [
+          b(" Items: " + m(e.selectionSize), 1)
         ])
       ], 512)), [
-        [vShow, _ctx.isDragging]
-      ]) : createCommentVNode("", true)
+        [T, e.isDragging]
+      ]) : S("", !0)
     ], 512)
   ], 34);
 }
-var powerTree = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
-var powerTreeMinimal = "";
-export { powerTree as PowerTree };
+const Q = /* @__PURE__ */ M(L, [["render", q]]);
+export {
+  Q as PowerTree
+};
