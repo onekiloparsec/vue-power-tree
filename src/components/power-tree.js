@@ -238,7 +238,7 @@ export default {
           }
         }
         if (nodeModel.isSelected) {
-          selectedNodes.push(node)
+          selectedNodes.push(nodeModel)
         }
       }, newNodes)
 
