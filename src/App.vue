@@ -39,7 +39,7 @@
     { title: 'Item2', isLeaf: true, data: { target_name: 'M2' } },
     { title: 'Folder1' },
     {
-      title: 'Folder2', isExpanded: true, children: [
+      title: 'Folder2', isExpanded: false, children: [
         { title: 'Item3', isLeaf: true },
         { title: 'Item4', isLeaf: true },
         {
