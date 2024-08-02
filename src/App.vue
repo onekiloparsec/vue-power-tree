@@ -36,7 +36,7 @@
 
   var nodes = [
     { title: 'Item1', isLeaf: true },
-    { title: 'Item2', isLeaf: true, data: { visible: false } },
+    { title: 'Item2', isLeaf: true, data: { target_name: 'M2' } },
     { title: 'Folder1' },
     {
       title: 'Folder2', isExpanded: true, children: [
@@ -51,7 +51,7 @@
     },
     { title: 'Folder5', isExpanded: false },
     { title: 'Item6', isLeaf: true },
-    { title: 'Item7', isLeaf: true, data: { visible: false } },
+    { title: 'Item7', isLeaf: true, data: { target_name: 'HD 5980' } },
     {
       title: 'Folder6', children: [
         {
